@@ -31,11 +31,15 @@ module TopHN
 
             title = a.text.strip
             uri_hn = subtext.css( 'a' )[ 1 ][ 'href' ]
+            uri = a[ 'href' ]
+            if uri =~ /^item\?/
+              uri = "http://news.ycombinator.com/#{uri}"
+            end
 
             Models::Item.create(
               id: id,
               title: title,
-              uri: a[ 'href' ],
+              uri: uri,
               uri_hn: uri_hn,
               score: score
             )
