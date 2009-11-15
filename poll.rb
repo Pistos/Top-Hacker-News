@@ -3,7 +3,8 @@
 require 'nokogiri'
 require 'open-uri'
 
-require 'model/init'
+__DIR__ = File.expand_path( File.dirname( __FILE__ ) )
+require "#{__DIR__}/model/init"
 
 module TopHN
   class Poller
