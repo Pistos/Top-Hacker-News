@@ -3,7 +3,7 @@ require 'model/init'
 
 module TopHN
   class MainController < Ramaze::Controller
-    def index
+    def rss
       items = Models::Item.s(
         "SELECT * FROM items ORDER BY time_added DESC LIMIT 50"
       ).map { |item|
