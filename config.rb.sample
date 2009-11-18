@@ -1,0 +1,6 @@
+module TopHN
+  FRIENDFEED_NICK = 'FriendFeedNick'
+  FRIENDFEED_REMOTE_KEY = 'remotekey'
+  TRIM_USERNAME = 'YourUsername'
+  TRIM_PASSWORD = 'ThePassword'
+end
