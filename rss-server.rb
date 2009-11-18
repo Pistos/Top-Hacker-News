@@ -30,4 +30,4 @@ module TopHN
   end
 end
 
-Ramaze.start( :port => 8026, :adapter => :thin )
+Ramaze.start( :port => 8026, :adapter => :thin, :mode => :live )
