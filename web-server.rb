@@ -23,9 +23,9 @@ module TopHN
       ).map { |item|
         %{
     <item>
-      <title>#{item.title}</title>
-      <link>#{item.uri}</link>
-      <description>http://news.ycombinator.com/#{item.uri_hn}</description>
+      <title>#{ escape_xml item.title }</title>
+      <link>#{ escape_xml item.uri }</link>
+      <description>http://news.ycombinator.com/#{ escape_xml item.uri_hn }</description>
     </item>
         }
       }
