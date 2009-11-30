@@ -18,6 +18,8 @@ module TopHN
     end
 
     def rss
+      response[ 'Content-Type' ] = 'application/xml'
+
       items = Models::Item.s(
         "SELECT * FROM items ORDER BY time_added DESC LIMIT 50"
       ).map { |item|
@@ -30,7 +32,7 @@ module TopHN
         }
       }
 
-      %{<?xml version="1.0" ?>
+      %{<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
 <channel>
   <title>Top Hacker News</title>
