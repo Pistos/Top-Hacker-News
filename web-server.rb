@@ -3,6 +3,20 @@ require 'model/init'
 
 module TopHN
   class MainController < Ramaze::Controller
+    XML_MAP = {
+      '&' => '&amp;',
+      '<' => '&lt;',
+      '>' => '&gt;',
+      "'" => '&apos;',
+      '"' => '&quot;',
+    }
+
+    def escape_xml( s )
+      s.gsub( /[&<>'"]/ ) do |m|
+        XML_MAP[ m ] || m
+      end
+    end
+
     def rss
       items = Models::Item.s(
         "SELECT * FROM items ORDER BY time_added DESC LIMIT 50"
