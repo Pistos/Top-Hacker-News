@@ -23,11 +23,13 @@ module TopHN
       items = Models::Item.s(
         "SELECT * FROM items ORDER BY time_added DESC LIMIT 50"
       ).map { |item|
+        uri_thread = "http://news.ycombinator.com/#{ escape_xml item.uri_hn }"
         %{
     <item>
       <title>#{ escape_xml item.title }</title>
       <link>#{ escape_xml item.uri }</link>
-      <description>http://news.ycombinator.com/#{ escape_xml item.uri_hn }</description>
+      <guid>#{ uri_thread }</guid>
+      <description>#{ uri_thread }</description>
     </item>
         }
       }
