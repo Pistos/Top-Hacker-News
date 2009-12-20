@@ -17,19 +17,24 @@ module TopHN
       @friendfeed.api_login FRIENDFEED_NICK, FRIENDFEED_REMOTE_KEY
     end
 
-    def shortened( uri )
+    def shortened( uri, title )
       escaped_uri = CGI.escape( uri )
+      escaped_title = CGI.escape( title )
       shortened_uri = nil
 
       3.times do
         begin
-          doc = Nokogiri::XML(
-            open( "http://api.tr.im/api/trim_url.xml?url=#{ escaped_uri }" )
-          )
-          shortened_uri = doc.css( 'trim url' ).text
+          open(
+            "http://cli.gs/api/v1/cligs/create?url=#{ escaped_uri }&title=#{ escaped_title }&key=3afeb4d8811734e9e4c917d8cdb1e44e&appid=http%3A%2F%2Fhn.purepistos.net"
+          ) do |http|
+            shortened_uri = http.read.strip
+          end
           break
         rescue OpenURI::HTTPError => e
-          if e.message !~ /502 Bad Gateway/
+          case e.message
+          when /500 /
+          when /502 Bad Gateway/
+          else
             raise e
           end
           sleep 2
@@ -63,7 +68,7 @@ module TopHN
           uri = "http://news.ycombinator.com/#{uri}"
         end
 
-        shortened_uri = shortened( uri )
+        shortened_uri = shortened( uri, title )
         if shortened_uri
           entry = @friendfeed.add_entry( "#{title} #{shortened_uri}" )
           begin
