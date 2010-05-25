@@ -3,6 +3,8 @@
 require 'nokogiri'
 require 'open-uri'
 require 'friendfeed'
+require 'bitly'
+Bitly.use_api_version_3
 
 __DIR__ = File.expand_path( File.dirname( __FILE__ ) )
 require "#{__DIR__}/config"
@@ -10,25 +12,21 @@ require "#{__DIR__}/model/init"
 
 module TopHN
   class Poller
-    MIN_SCORE = 40
+    MIN_SCORE = 50
 
     def initialize
       @friendfeed = FriendFeed::Client.new
       @friendfeed.api_login FRIENDFEED_NICK, FRIENDFEED_REMOTE_KEY
     end
 
-    def shortened( uri, title )
+    def shortened( uri )
       escaped_uri = CGI.escape( uri )
-      escaped_title = CGI.escape( title )
       shortened_uri = nil
+      bitly = Bitly.new( BITLY_USERNAME, BITLY_API_KEY )
 
       3.times do
         begin
-          open(
-            "http://cli.gs/api/v1/cligs/create?url=#{ escaped_uri }&title=#{ escaped_title }&key=3afeb4d8811734e9e4c917d8cdb1e44e&appid=http%3A%2F%2Fhn.purepistos.net"
-          ) do |http|
-            shortened_uri = http.read.strip
-          end
+          shortened_uri = bitly.shorten( uri, :history => 1 ).short_url
           break
         rescue OpenURI::HTTPError => e
           case e.message
@@ -68,7 +66,7 @@ module TopHN
           uri = "http://news.ycombinator.com/#{uri}"
         end
 
-        shortened_uri = shortened( uri, title )
+        shortened_uri = shortened( uri )
         if shortened_uri
           entry = @friendfeed.add_entry( "#{title} #{shortened_uri}" )
           begin
