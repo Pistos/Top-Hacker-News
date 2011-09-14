@@ -12,7 +12,7 @@ require "#{__DIR__}/model/init"
 
 module TopHN
   class Poller
-    MIN_SCORE = 50
+    MIN_SCORE = 90
 
     def initialize
       @friendfeed = FriendFeed::Client.new
@@ -68,6 +68,14 @@ module TopHN
 
         shortened_uri = shortened( uri )
         if shortened_uri
+          Models::Item.create(
+            id: id,
+            title: title,
+            uri: uri,
+            uri_hn: uri_hn,
+            score: score
+          )
+
           entry = @friendfeed.add_entry( "#{title} #{shortened_uri}" )
           begin
             @friendfeed.add_comment( entry[ 'id' ], "http://news.ycombinator.com/#{uri_hn}" )
@@ -76,14 +84,6 @@ module TopHN
               raise e
             end
           end
-
-          Models::Item.create(
-            id: id,
-            title: title,
-            uri: uri,
-            uri_hn: uri_hn,
-            score: score
-          )
 
           puts title
         end
