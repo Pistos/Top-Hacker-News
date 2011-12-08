@@ -12,7 +12,7 @@ require "#{__DIR__}/model/init"
 
 module TopHN
   class Poller
-    MIN_SCORE = 90
+    MIN_SCORE = 110
 
     def initialize
       @friendfeed = FriendFeed::Client.new
